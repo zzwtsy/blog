@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostComments from "@/components/astro/PostComments.astro";
+import Prose from "@/components/astro/Prose.astro";
+import PostHeader from "@/components/astro/PostHeader.astro";
+import Html from "./Html.astro";
+
+type Props = CollectionEntry<"blog">["data"];
+
+const { title, pubDate, updatedDate, heroImage } = Astro.props;
+---
+
+<Html>
+  <main class="container mt-16">
+    <article class="mx-auto flex justify-center">
+      <Prose>
+        <PostHeader
+          title={title}
+          pubDate={pubDate}
+          updatedDate={updatedDate}
+          heroImage={heroImage}
+        />
+        <slot />
+      </Prose>
+    </article>
+    <PostComments />
+  </main>
+</Html>

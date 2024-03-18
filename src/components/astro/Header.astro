@@ -1,0 +1,28 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+import { SITE_TITLE } from "@/consts";
+import { ModeToggle } from "@/components/react/ModeToggle";
+import { SearchPost } from "@/components/react/SearchPost";
+import { RssIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+---
+
+<!-- sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -->
+<header
+  class="fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+>
+  <nav class="container flex h-14 items-center justify-between">
+    <h2 class="flex text-2xl font-bold text-primary">
+      <a href="/">{SITE_TITLE}</a>
+    </h2>
+    <div class="flex gap-4 items-center text-primary">
+      <SearchPost client:load />
+      <HeaderLink href="/rss.xml" target={"_blank"}>
+        <Button variant={"ghost"} size={"icon"}>
+          <RssIcon />
+        </Button>
+      </HeaderLink>
+      <ModeToggle client:load />
+    </div>
+  </nav>
+</header>
