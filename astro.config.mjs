@@ -17,7 +17,6 @@ export default defineConfig({
     }),
     react(),
   ],
-  output: "server",
   adapter: vercel({
     webAnalytics: {
       enabled: true,
