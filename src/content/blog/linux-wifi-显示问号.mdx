@@ -4,8 +4,9 @@ pubDate: "2022-08-27"
 description: ""
 heroImage: ""
 ---
+import { Image } from 'astro:assets';
 
-![截屏-20220827144819-166x58.png](https://static.yumdeb.top/img/2022-08-27_153645/cvYfJVo5ujDmNFT.png)
+<Image src={"https://static.yumdeb.top/img/2022-08-27_153645/cvYfJVo5ujDmNFT.png"} alt={""} inferSize />
 
 安装 archlinux gnome 桌面后 WIFI 图标总是显示问号，在网上找了好久解决方法，总算找到了，记录一下。
 
@@ -21,7 +22,7 @@ vim /etc/NetworkManager/conf.d/20-connectivity.conf
 
 向文件内添加以下内容
 
-```text
+```plaintext
 [connectivity]
 enabled=false
 ```
@@ -32,4 +33,4 @@ enabled=false
 
 ## 用到的网站
 
-https://wiki.archlinux.org/title/NetworkManager#Checking_connectivity
+[wiki.archlinux.org](https://wiki.archlinux.org/title/NetworkManager#Checking_connectivity)
