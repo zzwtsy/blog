@@ -74,8 +74,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-html {
-  overflow-x: hidden;
-  margin-right: calc(100% - 100vw);
-}
