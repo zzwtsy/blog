@@ -7,6 +7,9 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://blog.yumdeb.top",
+  server: {
+    host: true,
+  },
   integrations: [
     mdx(),
     sitemap(),
