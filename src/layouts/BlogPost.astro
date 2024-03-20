@@ -11,8 +11,8 @@ const { title, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <Html>
-  <main class="container mt-16">
-    <article class="mx-auto flex justify-center">
+  <div>
+    <article>
       <Prose>
         <PostHeader
           title={title}
@@ -24,5 +24,5 @@ const { title, pubDate, updatedDate, heroImage } = Astro.props;
       </Prose>
     </article>
     <PostComments />
-  </main>
+  </div>
 </Html>

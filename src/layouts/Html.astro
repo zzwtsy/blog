@@ -5,43 +5,50 @@ import Footer from "@/components/astro/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts";
 ---
 
-<html lang="zh-CN" class="overflow-x-hidden mr-[calc(100%-100vw)]">
-  <head>
-    <script is:inline>
-      (function () {
-        const getThemePreference = () => {
-          if (
-            typeof localStorage !== "undefined" &&
-            localStorage.getItem("theme")
-          ) {
-            return localStorage.getItem("theme");
-          }
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        };
-        const isDark = getThemePreference() === "dark";
-        document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-
-        if (typeof localStorage !== "undefined") {
-          const observer = new MutationObserver(() => {
-            const isDark = document.documentElement.classList.contains("dark");
-            localStorage.setItem("theme", isDark ? "dark" : "light");
-          });
-          observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["class"],
-          });
+<head>
+  <script is:inline>
+    (function () {
+      const getThemePreference = () => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
         }
-      })();
-    </script>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  </head>
-  <body class="relative flex min-h-screen flex-col bg-background">
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+      const isDark = getThemePreference() === "dark";
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+      document.documentElement.style.setProperty(
+        "color-scheme",
+        isDark ? "dark" : "light"
+      );
+
+      if (typeof localStorage !== "undefined") {
+        const observer = new MutationObserver(() => {
+          const isDark = document.documentElement.classList.contains("dark");
+          localStorage.setItem("theme", isDark ? "dark" : "light");
+        });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+      }
+    })();
+  </script>
+  <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+</head>
+
+<html lang="zh-CN">
+  <body>
     <Header />
-    <slot />
+    <main class="container">
+      <slot />
+    </main>
     <Footer />
-    <script>
+    <script is:inline>
       // prevent flash when using view transitions in astro
       const initColorMode = () => {
         const getThemePreference = () => {
@@ -57,6 +64,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts";
         };
         const isDark = getThemePreference() === "dark";
         document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+        document.documentElement.style.setProperty(
+          "color-scheme",
+          isDark ? "dark" : "light"
+        );
 
         if (typeof localStorage !== "undefined") {
           const observer = new MutationObserver(() => {

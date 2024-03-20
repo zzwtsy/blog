@@ -75,8 +75,7 @@
   }
 }
 
-*::-webkit-scrollbar {
-  display: none;
-  -ms-overflow-style: none; /* IE 和 Edge */
-  scrollbar-width: none; /* Firefox */
+html {
+  overflow-x: hidden;
+  margin-right: calc(100% - 100vw);
 }
