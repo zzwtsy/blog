@@ -9,21 +9,26 @@ const posts = (await getCollection("blog")).sort(
 ---
 
 <Html>
-  <section class="w-fit mx-auto mt-8">
-    <ul class="flex flex-col justify-center gap-6 list-none">
+  <section class="mx-auto mt-8">
+    <ul class="flex flex-col w-fit max-w-[65ch] mx-auto justify-center gap-6 list-none">
       {
         posts
           .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
           .map((post) => (
-            <li>
+            <li class="border-b-2 border-dashed pb-3">
               <a href={`/${post.slug}/`} class="text-primary">
-                <div class="flex flex-row gap-3 justify-start items-center">
-                  <p class="text-md">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
-                  <h4 class="text-xl font-bold hover:text-muted-foreground">
+                <div class="flex flex-col gap-1 justify-center items-start">
+                  <h4 class="text-2xl sm:text-xl font-bold hover:text-muted-foreground">
                     {post.data.title}
                   </h4>
+                  <p class="py-1">
+                    <span>
+                      {post.data.description}
+                    </span>
+                  </p>
+                  <p class="text-sm text-muted-foreground">
+                    <FormattedDate date={post.data.pubDate} />
+                  </p>
                 </div>
               </a>
             </li>
