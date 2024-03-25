@@ -66,7 +66,7 @@ export function SearchPage() {
               />
             </div>
           </DialogHeader>
-          <ScrollArea className="max-h-80 w-full">
+          <ScrollArea className="max-h-80 w-full px-1">
             <div className="grid grid-cols-1 gap-2">
               {results.map((result) => (
                 <div
