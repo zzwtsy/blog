@@ -10,6 +10,14 @@ export default defineConfig({
   server: {
     host: true,
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        // 将 pagefind.js 标记为外部模块以确保成功构建
+        external: ["/pagefind/pagefind.js"],
+      },
+    },
+  },
   integrations: [
     mdx(),
     sitemap(),

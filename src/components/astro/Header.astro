@@ -2,7 +2,7 @@
 import HeaderLink from "./HeaderLink.astro";
 import { SITE_TITLE } from "@/consts";
 import { ModeToggle } from "@/components/react/ModeToggle";
-import { SearchPost } from "@/components/react/SearchPost";
+import { SearchPage } from "@/components/react/SearchPage";
 import { RssIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 ---
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
       <a href="/">{SITE_TITLE}</a>
     </h2>
     <div class="flex gap-4 items-center text-primary justify-end flex-1">
-      <SearchPost client:load />
+      <SearchPage client:load />
       <HeaderLink href="/rss.xml" target={"_blank"}>
         <Button variant={"ghost"} size={"icon"}>
           <RssIcon />
