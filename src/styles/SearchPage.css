@@ -19,4 +19,5 @@ mark {
   background-color: hsl(60, 100%, 30%);
   border-radius: calc(var(--radius) - 4px);
   padding: 0 2px;
+  margin: 0 1px;
 }

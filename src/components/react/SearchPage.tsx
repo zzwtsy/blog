@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "@/styles/SearchPage.css";
+import { Loading } from "./Loading";
 
 export function SearchPage() {
   const [open, setOpen] = useState(false);
-  const { searchValue, setSearchValue, results } = useSearchPage();
+  const { searchValue, setSearchValue, results, isSearching } = useSearchPage();
 
   const memoResults = useMemo(() => {
-    console.log("reandering results");
     return (
       <ul className="w-full">
         <TransitionGroup>
@@ -68,16 +68,15 @@ export function SearchPage() {
                 value={searchValue}
                 type="text"
                 className="border-none outline-none"
-                onChange={({ target }) => {
-                  console.log("searching for", target.value);
-                  setSearchValue(target.value.trim());
-                }}
+                onChange={({ target }) => setSearchValue(target.value.trim())}
               />
             </div>
           </DialogHeader>
-          <ScrollArea className="w-full h-80">{memoResults}</ScrollArea>
+          <ScrollArea className="w-full max-h-80 min-h-40">
+            {isSearching ? <Loading className="min-h-40" /> : memoResults}
+          </ScrollArea>
           <DialogFooter className="w-full">
-            <span>{results.length} 个结果</span>
+            <span className="text-center">{results.length} 个结果</span>
           </DialogFooter>
         </DialogContent>
       </Dialog>

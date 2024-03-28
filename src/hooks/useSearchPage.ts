@@ -18,29 +18,37 @@ interface SearchResultItem {
 export function useSearchPage() {
   const [results, setResults] = useState<SearchResult>([]);
   const [searchValue, setSearchValue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
   useEffect(() => {
-    if (!debouncedSearchValue) {
-      setResults([]);
-      return;
-    }
+    setIsSearching(true);
     async function search() {
+      if (!debouncedSearchValue) {
+        setResults([]);
+        setIsSearching(false);
+        return;
+      }
+
       let pagefind;
+      let searchResults;
       try {
         if (pagefind === void 0) {
           // @ts-ignore
           pagefind = await import("/pagefind/pagefind.js");
         }
+        pagefind.init();
+        searchResults = await pagefind.search(debouncedSearchValue);
       } catch (error) {
+        setIsSearching(false);
         console.log("Failed to import pagefind.js", error);
         return;
       }
 
-      pagefind.init();
-
-      const searchResults = await pagefind.search(debouncedSearchValue);
-      if (!searchResults) return;
+      if (!searchResults) {
+        setIsSearching(false);
+        return;
+      }
 
       const dataList: SearchResult = [];
       for (const result of searchResults.results) {
@@ -52,10 +60,14 @@ export function useSearchPage() {
           nodeRef: createRef(),
         });
       }
-      setResults(dataList);
+      try {
+        setResults(dataList);
+      } finally {
+        setIsSearching(false);
+      }
     }
     search();
   }, [debouncedSearchValue]);
 
-  return { results, searchValue, setSearchValue };
+  return { results, isSearching, searchValue, setSearchValue };
 }
