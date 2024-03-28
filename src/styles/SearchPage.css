@@ -1,0 +1,22 @@
+/* styles.css 或者内联样式 */
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms linear;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms linear;
+}
+
+mark {
+  background-color: hsl(60, 100%, 30%);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0 2px;
+}

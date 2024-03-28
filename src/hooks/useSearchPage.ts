@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type RefObject, createRef } from "react";
 import { useDebounce } from "./useDebounce";
+import { SITE_TITLE } from "../consts";
 
 type SearchResult = Array<SearchResultItem>;
 
 interface SearchResultItem {
+  id: string;
   url: string;
   meta: {
     title: string;
   };
   raw_url: string;
   excerpt: string;
+  nodeRef: RefObject<HTMLLIElement>;
 }
 
 export function useSearchPage() {
@@ -18,15 +21,19 @@ export function useSearchPage() {
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
   useEffect(() => {
-    setResults([]);
-    if (!debouncedSearchValue) return;
+    if (!debouncedSearchValue) {
+      setResults([]);
+      return;
+    }
     async function search() {
       let pagefind;
       try {
-        // @ts-ignore
-        pagefind = await import("/pagefind/pagefind.js");
+        if (pagefind === void 0) {
+          // @ts-ignore
+          pagefind = await import("/pagefind/pagefind.js");
+        }
       } catch (error) {
-        console.log("Failed to import pagefind.js");
+        console.log("Failed to import pagefind.js", error);
         return;
       }
 
@@ -35,11 +42,15 @@ export function useSearchPage() {
       const searchResults = await pagefind.search(debouncedSearchValue);
       if (!searchResults) return;
 
-      let dataList: SearchResult = [];
+      const dataList: SearchResult = [];
       for (const result of searchResults.results) {
         const data = await result.data();
-        if (!data || data.meta.title === "Daydreamer Blog") continue;
-        dataList.push(data);
+        if (!data || data.meta.title === SITE_TITLE) continue;
+        dataList.push({
+          ...data,
+          id: result.id,
+          nodeRef: createRef(),
+        });
       }
       setResults(dataList);
     }

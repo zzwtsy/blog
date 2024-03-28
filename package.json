@@ -31,6 +31,7 @@
     "markdown-it": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-transition-group": "^4.4.5",
     "sanitize-html": "^2.13.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss": "^3.4.1",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
+    "@types/react-transition-group": "^4.4.10",
     "@types/sanitize-html": "^2.11.0",
     "pagefind": "^1.0.4"
   }
