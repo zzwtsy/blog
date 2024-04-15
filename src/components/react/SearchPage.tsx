@@ -73,7 +73,7 @@ export function SearchPage() {
             </div>
           </DialogHeader>
           <ScrollArea className="w-full h-80">
-            {isSearching ? <Loading className="min-h-40" /> : memoResults}
+            {isSearching ? <Loading className="h-80" /> : memoResults}
           </ScrollArea>
           <DialogFooter className="w-full">
             <span className="text-center">{results.length} 个结果</span>
