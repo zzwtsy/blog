@@ -30,13 +30,10 @@ export function useSearchPage() {
         return;
       }
 
-      let pagefind;
       let searchResults;
       try {
-        if (pagefind === void 0) {
-          // @ts-ignore
-          pagefind = await import("/pagefind/pagefind.js");
-        }
+        // @ts-ignore
+        const pagefind = await import("/pagefind/pagefind.js");
         pagefind.init();
         searchResults = await pagefind.search(debouncedSearchValue);
       } catch (error) {
@@ -60,6 +57,7 @@ export function useSearchPage() {
           nodeRef: createRef(),
         });
       }
+
       try {
         setResults(dataList);
       } finally {
