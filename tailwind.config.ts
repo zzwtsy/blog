@@ -30,6 +30,9 @@ export default {
         sans: ["LXGW WenKai Screen", ...defaultTheme.fontFamily.sans],
         mono: ["LXGW WenKai Mono Screen", ...defaultTheme.fontFamily.sans],
       },
+      typography: {
+        zinc: { css: { "--tw-prose-invert-headings": "#ccc" } },
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
