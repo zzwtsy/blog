@@ -72,7 +72,7 @@ export function SearchPage() {
               />
             </div>
           </DialogHeader>
-          <ScrollArea className="w-full max-h-80 min-h-40">
+          <ScrollArea className="w-full h-80">
             {isSearching ? <Loading className="min-h-40" /> : memoResults}
           </ScrollArea>
           <DialogFooter className="w-full">
