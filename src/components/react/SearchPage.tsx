@@ -1,34 +1,45 @@
-import { Search, SearchIcon } from "lucide-react";
-import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useSearchPage } from "@/hooks/useSearchPage";
-import sanitiaeHtml from "sanitize-html";
+import { Search, SearchIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useSearchPage, type SearchResult } from '@/hooks/useSearchPage';
+import sanitiaeHtml from 'sanitize-html';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "@/styles/SearchPage.css";
-import { Loading } from "./Loading";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import '@/styles/SearchPage.css';
+import { Loading } from './Loading';
 
 export function SearchPage() {
   const [open, setOpen] = useState(false);
   const { searchValue, setSearchValue, results, isSearching } = useSearchPage();
+  const [displayedResults, setDisplayedResults] = useState<SearchResult>([]);
+
+  useEffect(() => {
+    setDisplayedResults(results);
+  }, [results]);
 
   const memoResults = useMemo(() => {
     return (
-      <ul className="w-full">
-        <TransitionGroup>
-          {results.map(({ id, raw_url, meta: { title }, excerpt, nodeRef }) => (
+      <TransitionGroup component="ul" className="w-full">
+        {displayedResults
+          .sort()
+          .map(({ id, raw_url, meta: { title }, excerpt, nodeRef }) => (
             <CSSTransition
               key={id}
               timeout={300}
               nodeRef={nodeRef}
-              classNames="fade"
+              classNames={{
+                enter: 'fade-enter',
+                enterActive: 'fade-enter-active',
+                exit: 'fade-exit',
+                exitActive: 'fade-exit-active',
+              }}
             >
               <li
                 ref={nodeRef}
@@ -48,21 +59,20 @@ export function SearchPage() {
               </li>
             </CSSTransition>
           ))}
-        </TransitionGroup>
-      </ul>
+      </TransitionGroup>
     );
-  }, [results]);
+  }, [displayedResults]);
 
   return (
     <>
-      <Button variant={"ghost"} onClick={() => setOpen(true)} size={"icon"}>
+      <Button variant={'ghost'} onClick={() => setOpen(true)} size={'icon'}>
         <SearchIcon />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader className="border-b-2">
             <div className="flex items-center px-3">
-              <Search className={"mr-2 h-4 w-4 shrink-0 opacity-50"} />
+              <Search className={'mr-2 h-4 w-4 shrink-0 opacity-50'} />
               <Input
                 placeholder="Search..."
                 value={searchValue}
@@ -76,7 +86,9 @@ export function SearchPage() {
             {isSearching ? <Loading className="h-80" /> : memoResults}
           </ScrollArea>
           <DialogFooter className="w-full">
-            <span className="text-center">{results.length} 个结果</span>
+            <span className="text-center">
+              {displayedResults.length} 个结果
+            </span>
           </DialogFooter>
         </DialogContent>
       </Dialog>

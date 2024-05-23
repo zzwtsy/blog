@@ -2,7 +2,7 @@ import { useEffect, useState, type RefObject, createRef } from "react";
 import { useDebounce } from "./useDebounce";
 import { SITE_TITLE } from "../consts";
 
-type SearchResult = Array<SearchResultItem>;
+export type SearchResult = Array<SearchResultItem>;
 
 interface SearchResultItem {
   id: string;
