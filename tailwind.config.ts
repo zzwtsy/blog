@@ -27,8 +27,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["LXGW WenKai Screen", ...defaultTheme.fontFamily.sans],
-        mono: ["LXGW WenKai Mono Screen", ...defaultTheme.fontFamily.sans],
+        sans: ["Noto Sans SC", ...defaultTheme.fontFamily.sans],
+        mono: ["JetBrains Mono","Noto Sans SC", ...defaultTheme.fontFamily.sans],
       },
       typography: {
         zinc: { css: { "--tw-prose-invert-headings": "#ccc" } },
