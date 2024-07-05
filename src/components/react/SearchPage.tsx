@@ -65,7 +65,7 @@ export function SearchPage() {
 
   return (
     <>
-      <Button variant={'ghost'} onClick={() => setOpen(true)} size={'icon'}>
+      <Button aria-label="搜索网页" variant={'ghost'} onClick={() => setOpen(true)} size={'icon'}>
         <SearchIcon />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
