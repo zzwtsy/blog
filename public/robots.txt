@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://blog.yumdeb.top/sitemap-0.xml
+Sitemap: https://blog.yumdeb.top/sitemap-index.xml
