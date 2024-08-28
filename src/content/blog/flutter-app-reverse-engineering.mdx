@@ -1,0 +1,154 @@
+---
+title: "Flutter APK 逆向：使用 Frida、Blutter"
+pubDate: "2024-07-05"
+description: ""
+heroImage: ""
+---
+import ImagePreview from "@/components/astro/ImagePreview.astro"
+
+## 前置条件
+
+1. 根据 README 安装好 [Frida](https://github.com/frida/frida) 和 [Blutter](https://github.com/worawit/blutter)
+
+2. 解压 APK 文件
+
+## 使用 Blutter 反编译 APK
+
+1. 运行 `blutter` 命令
+
+   ```shell
+   python .\blutter.py ..\jdb_official_v1.9.19\lib\arm64-v8a\ .\out
+   ```
+
+   **..\jdb_official_v1.9.19\lib\arm64-v8a\\**：为 APK 文件解压后的 lib 文件路径
+
+   **.\out**：为反编译后的文件保存路径
+
+   <ImagePreview src="https://zzwtsy.github.io/picx-images-hosting/20240708/image.7ljvh7dy4l.webp" />
+
+   反编译后的 out 文件夹下有如下文件
+
+   <ImagePreview src="https://zzwtsy.github.io/picx-images-hosting/20240708/image.32hue8gt32.webp" />
+
+2. 修改 blutter_frida.js 文件
+
+   ```js ins={1-4,6,9,12,18-22,33-36} del={5,7-8,32}
+   /**
+    * @parma [fn_addr] function address
+    * @param [name] function name
+    */
+   function onLibappLoaded() {
+   function onLibappLoaded(fn_addr, fn_name) {
+      xxx("remove this line and correct the hook value");
+      const fn_addr = 0xdeadbeef;
+      const time = Date.now();
+      Interceptor.attach(libapp.add(fn_addr), {
+         onEnter: function () {
+            console.log("-----------------------")
+            init(this.context);
+            let objPtr = getArg(this.context, 0); // 获取第一个参数
+            const [tptr, cls, values] = getTaggedObjectValue(objPtr);
+            console.log(`${cls.name}@${tptr.toString().slice(2)} =`, JSON.stringify(values, null, 2));
+         }
+         onLeave: function (result) {
+            const [tptr, cls, values] = getTaggedObjectValue(result);
+            console.log(`${time}-${name}-result =`, values);
+            console.log("==========================")
+         }
+      });
+   }
+
+   function tryLoadLibapp() {
+      libapp = Module.findBaseAddress('libapp.so');
+      if (libapp === null)
+         setTimeout(tryLoadLibapp, 500);
+      else
+         // 示例
+         onLibappLoaded();
+         onLibappLoaded(0x578960,"getDecryptString");
+         onLibappLoaded(0x4f6f7c,"JsonCodec::decode");
+         onLibappLoaded(0x4b6f18,"createFromCharCodes");
+         onLibappLoaded(0x578c34,"decodeBase64");
+   }
+   ```
+
+这样修改后就可以方便的一次打印多个函数的参数或者返回值了
+
+## 对 APK 进行抓包分析
+
+这里使用 [reqable](https://reqable.com/) 进行抓包（选择协同模式，Windows 上也要安装软件并信任证书）
+
+1. reqable 手机 app 安装 Magisk 模块
+
+   **证书管理 -> 安装根证书到本机 -> Magisk模块 -> 下载Magisk模块**
+   KernelSU 也可以安装这个模块（我这里使用的就是 KernelSU）
+
+   <ImagePreview src="https://zzwtsy.github.io/picx-images-hosting/20240708/Screenshot_20240708_220215.4g4dibt6uu.webp" />
+
+2. 开始抓包
+
+   发现：**jdsignature: 1720448471.lpw6vgqzsp.7dcfb5fe9778909cba73020814cb8acf** 这个参数应该就是加密参数。
+   
+   - **1720448471**：应该是时间戳
+   - **lpw6vgqzsp**：应该是随机字符串（通过在多个设备上抓包发现，这个字符串是固定的）
+   - **7dcfb5fe9778909cba73020814cb8acf**：长度 32 应该是 MD5 加密后的字符串。
+
+## Frida hook 可能的函数
+
+1. VSCode 打开 out 文件夹
+
+2. 在 asm 文件夹下搜索 MD5
+
+   发现 **common_utils/src/encrypt_util.dart** 这个文件下的 encodeMd5 函数比较可疑，所以可以尝试 hook 这个函数。
+
+   ```dart
+   static _ encodeMd5(/* No info */) {
+    // ** addr: 0x5788e4, size: 0x70
+    /* ... */
+   }
+   ```
+
+   将 `0x5788e4` 这个地址填入 blutter_frida.js 文件的 `onLibappLoaded` 函数中 `fn_addr`，为了方便查看日志 `fn_name` 就填 `encodeMd5`
+
+   最终代码：
+
+   ```javascript
+   function tryLoadLibapp() {
+      libapp = Module.findBaseAddress("libapp.so");
+      if (libapp === null) {
+         setTimeout(tryLoadLibapp, 500);
+      } else {
+         onLibappLoaded(0x5788e4, "encodeMd5");
+      }
+   }
+   ```
+
+3. 开始 hook 函数（注意：最好不要再电脑上使用模拟器进行 hook，可能无法 hook）
+
+   1. 前往 [Frida releases](https://github.com/frida/frida/releases) 下载对应系统架构的 Frida server
+   2. 将 Frida server 上传到手机
+   3. 在 root 模式下运行 `frida-server`（手机的 SELinux 必须处于宽容模式，否则无法运行）
+
+      <ImagePreview src="https://zzwtsy.github.io/picx-images-hosting/20240708/image.ese3zb0um.webp" />
+
+   4. 在电脑上转发 adb 端口：
+
+      ```shell
+      adb forward tcp:27042 tcp:27042
+      adb forward tcp:27043 tcp:27043
+      ```
+
+   5. 运行 `frida -UF -l blutter_frida.js`（要 hook 的 app 需要打开）
+
+      <ImagePreview src="https://zzwtsy.github.io/picx-images-hosting/20240708/image.1zi53gc2ak.webp" />
+
+      ```plaintext
+      1720451087691-encodeMd5-String@6e023164c9 = "172045108971cf27bb3c0bcdf207b64abecddc970098c7421ee7203b9cdae54478478a199e7d5a6e1a57691123c1a931c057842fb73ba3b3c83bcd69c17ccf174081e3d8aa"
+      1720451087691-encodeMd5-result = 4ef0bd172ef947dad003599fc4293cef
+      ```
+
+      对应的请求参数：`jdsignature：1720451089.lpw6vgqzsp.4ef0bd172ef947dad003599fc4293cef`
+
+      发现 `4ef0bd172ef947dad003599fc4293cef` 就是 `时间戳` + `71cf27bb...` 的 MD5 值
+
+      `4ef0bd172ef947dad003599fc4293cef` 此值固定不会改变
