@@ -5,8 +5,6 @@ description: "解决 ArchLinux GNOME 桌面中 WiFi 图标显示问号的问题"
 heroImage: ""
 ---
 
-![linux wifi 显示问号](https://static.yumdeb.top/img/2022-08-27_153645/cvYfJVo5ujDmNFT.png)
-
 安装 archlinux gnome 桌面后 WIFI 图标总是显示问号，在网上找了好久解决方法，总算找到了，记录一下。
 
 ## 第一步
