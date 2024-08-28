@@ -1,37 +1,36 @@
-import { useEffect, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { sendMessage } from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { sendMessage } from "@/lib/utils";
+import useTheme from "@/hooks/useTheme";
 
 export function ModeToggle() {
-  const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>(
-    'system'
-  );
+  const { colorMode, theme, setTheme } = useTheme();
 
   useEffect(() => {
     const isDark =
-      theme === 'dark' ||
-      (theme === 'system' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches);
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
     sendMessage({
       setConfig: {
-        theme: isDark ? 'dark' : 'light',
+        theme: isDark ? "dark" : "light",
         reactionsEnabled: false,
       },
     });
     document.documentElement.style.setProperty(
-      'color-scheme',
-      isDark ? 'dark' : 'light'
+      "color-scheme",
+      isDark ? "dark" : "light"
     );
-    localStorage.setItem('theme', theme);
-    document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+    localStorage.setItem("theme", theme);
+    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
   }, [theme]);
 
   return (
@@ -44,13 +43,22 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem aria-label="亮色主题" onClick={() => setThemeState('light')}>
+        <DropdownMenuItem
+          aria-label="亮色主题"
+          onClick={() => setTheme("light")}
+        >
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem aria-label="暗色主题" onClick={() => setThemeState('dark')}>
+        <DropdownMenuItem
+          aria-label="暗色主题"
+          onClick={() => setTheme("dark")}
+        >
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem aria-label="跟随系统主题" onClick={() => setThemeState('system')}>
+        <DropdownMenuItem
+          aria-label="跟随系统主题"
+          onClick={() => setTheme("system")}
+        >
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
