@@ -4,18 +4,18 @@ import FormattedDate from "@/components/astro/FormattedDate.astro";
 import Html from "@/layouts/Html.astro";
 
 const posts = (await getCollection("blog")).sort(
-  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
 ---
 
 <Html>
   <section class="mx-auto mt-8">
-    <ul class="flex flex-col w-fit max-w-[65ch] mx-auto justify-center gap-6 list-none">
+    <ul class="flex flex-col max-w-[80ch] w-full mx-auto justify-center gap-6 list-none">
       {
         posts
           .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
           .map((post) => (
-            <li class="border-b-2 border-dashed pb-3">
+            <li class="border-b-2 border-dashed pb-3 px-1">
               <a href={`/${post.slug}/`} class="text-primary">
                 <div class="flex flex-col gap-1 justify-center items-start">
                   <h4 class="text-2xl sm:text-xl font-bold hover:text-muted-foreground">
