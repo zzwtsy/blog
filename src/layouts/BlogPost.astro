@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PostComments from "@/components/astro/PostComments.astro";
-import Prose from "@/components/astro/Prose.astro";
 import PostHeader from "@/components/astro/PostHeader.astro";
 import Html from "./Html.astro";
 
@@ -12,8 +11,9 @@ const { title, pubDate, updatedDate, heroImage } = Astro.props;
 
 <Html>
   <div>
-    <article>
-      <Prose>
+    <article
+      class="prose max-w-[80ch] prose-zinc dark:prose-invert prose-img:rounded-lg mx-auto"
+    >
         <PostHeader
           title={title}
           pubDate={pubDate}
@@ -21,7 +21,6 @@ const { title, pubDate, updatedDate, heroImage } = Astro.props;
           heroImage={heroImage}
         />
         <slot />
-      </Prose>
     </article>
     <PostComments />
   </div>
