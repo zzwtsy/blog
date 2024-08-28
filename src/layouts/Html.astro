@@ -3,156 +3,69 @@ import BaseHead from '@/components/astro/BaseHead.astro';
 import Header from '@/components/astro/Header.astro';
 import Footer from '@/components/astro/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
+import { ViewTransitions } from "astro:transitions";
+import { fade } from 'astro:transitions';
+import "rc-image/assets/index.css";
 ---
 
-<html lang="zh-CN">
+<html lang="zh-CN" transition:animate={fade({ duration: '0.5s' })}>
   <head>
     <script is:inline>
       (function () {
-        // 定义常量
-        const DARK_THEME = 'dark';
-        const LIGHT_THEME = 'light';
-        const SYSTEM_THEME = 'system';
-        const GISCUS_URL = 'https://giscus.app';
-
-        // 向 giscus iframe 发送消息
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe || !iframe.contentWindow) return;
-
-          iframe.contentWindow.postMessage({ giscus: message }, GISCUS_URL);
-        };
-
-        // 获取存储的主题偏好
-        const getStoredTheme = () => {
-          if (typeof localStorage !== 'undefined') {
-            return localStorage.getItem('theme');
-          }
-          return null;
-        };
-
-        // 获取用户的首选主题
-        const getPreferredTheme = () => {
-          const storedTheme = getStoredTheme();
-          if (storedTheme && storedTheme !== SYSTEM_THEME) {
-            return storedTheme;
-          }
-          return window.matchMedia(`(prefers-color-scheme: ${DARK_THEME})`)
+        const storedTheme = window.localStorage.getItem("theme") ?? "system";
+        let presetTheme;
+        if (storedTheme === "system") {
+          presetTheme = window.matchMedia("(prefers-color-scheme: dark)")
             .matches
-            ? DARK_THEME
-            : LIGHT_THEME;
-        };
-
-        // 应用主题
-        const applyTheme = (theme) => {
-          const isDarkMode = theme === DARK_THEME;
-          // 切换主题类
-          document.documentElement.classList.toggle(DARK_THEME, isDarkMode);
-          // 设置颜色方案
-          document.documentElement.style.setProperty('color-scheme', theme);
-          sendMessage({
-            setConfig: {
-              theme: theme,
-              reactionsEnabled: false,
-            },
-          });
-        };
-
-        // 初始化主题
-        const initializeTheme = () => {
-          const preferredTheme = getPreferredTheme();
-          applyTheme(preferredTheme);
-        };
-
-        // 处理系统主题变化
-        const handleSystemThemeChange = (e) => {
-          if (getStoredTheme() === SYSTEM_THEME) {
-            applyTheme(e.matches ? DARK_THEME : LIGHT_THEME);
-          }
-        };
-
-        // 执行初始化
-        initializeTheme();
-
-        // 监听系统主题变化
-        window
-          .matchMedia(`(prefers-color-scheme: ${DARK_THEME})`)
-          .addEventListener('change', handleSystemThemeChange);
+            ? "dark"
+            : "light";
+        } else {
+          presetTheme = storedTheme;
+        }
+        if (presetTheme === "dark") {
+          document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = "dark";
+        } else {
+          document.documentElement.classList.remove("dark");
+          document.documentElement.style.colorScheme = "light";
+        }
       })();
     </script>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <ViewTransitions />
   </head>
   <body class="relative min-h-screen flex flex-col">
     <Header />
-    <main class="container">
+    <main>
       <slot />
     </main>
     <Footer />
-    <script is:inline>
+    <script>
       (function () {
-        // 定义常量
-        const DARK_THEME = 'dark';
-        const LIGHT_THEME = 'light';
-        const SYSTEM_THEME = 'system';
-        const GISCUS_URL = 'https://giscus.app';
-
-        // 向 giscus iframe 发送消息
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe || !iframe.contentWindow) return;
-
-          iframe.contentWindow.postMessage({ giscus: message }, GISCUS_URL);
-        };
-
-        // 获取存储的主题偏好
-        const getStoredTheme = () => {
-          if (typeof localStorage !== 'undefined') {
-            return localStorage.getItem('theme');
-          }
-          return null;
-        };
-
-        // 获取用户的首选主题
-        const getPreferredTheme = () => {
-          const storedTheme = getStoredTheme();
-          if (storedTheme && storedTheme !== SYSTEM_THEME) {
-            return storedTheme;
-          }
-          return window.matchMedia(`(prefers-color-scheme: ${DARK_THEME})`)
-            .matches
-            ? DARK_THEME
-            : LIGHT_THEME;
-        };
-
-        // 应用主题
-        const applyTheme = (theme) => {
-          const isDarkMode = theme === DARK_THEME;
-          // 切换主题类
-          document.documentElement.classList.toggle(DARK_THEME, isDarkMode);
-          // 设置颜色方案
-          document.documentElement.style.setProperty('color-scheme', theme);
-          sendMessage({
-            setConfig: {
-              theme: theme,
-              reactionsEnabled: false, // 禁用反应功能
-            },
-          });
-        };
-
         // 初始化颜色模式
         const initColorMode = () => {
-          const preferredTheme = getPreferredTheme();
-          applyTheme(preferredTheme);
+          const storedTheme = window.localStorage.getItem("theme") ?? "system";
+          console.log("storedTheme:", storedTheme);
+          let presetTheme;
+          if (storedTheme === "system") {
+            presetTheme = window.matchMedia("(prefers-color-scheme: dark)")
+              .matches
+              ? "dark"
+              : "light";
+          } else {
+            presetTheme = storedTheme;
+          }
+          if (presetTheme === "dark") {
+            document.documentElement.classList.add("dark");
+            document.documentElement.style.colorScheme = "dark";
+          } else {
+            document.documentElement.classList.remove("dark");
+            document.documentElement.style.colorScheme = "light";
+          }
         };
-
-        // 监听 Astro 页面切换事件
-        const setupAstroListeners = () => {
-          document.addEventListener('astro:after-swap', initColorMode);
-        };
-
         // 执行初始化
         initColorMode();
-        setupAstroListeners();
+        document.addEventListener("astro:after-swap", initColorMode);
       })();
     </script>
   </body>
