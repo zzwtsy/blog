@@ -1,0 +1,7 @@
+---
+import { ImageView } from "@/components/react/ImageView";
+
+const { src } = Astro.props;
+---
+
+<ImageView src={src} client:only="react" />
