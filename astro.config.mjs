@@ -14,6 +14,12 @@ export default defineConfig({
         external: ["/pagefind/pagefind.js"],
       },
     },
+    ssr: {
+      noExternal: ["react-use"],
+    },
+    optimizeDeps: {
+      include: ["react-use"],
+    },
   },
   integrations: [
     mdx(),
