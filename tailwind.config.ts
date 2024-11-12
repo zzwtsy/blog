@@ -28,7 +28,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Noto Sans SC", ...defaultTheme.fontFamily.sans],
-        mono: ["JetBrains Mono","Noto Sans SC", ...defaultTheme.fontFamily.sans],
+        mono: ["JetBrains Mono", "Noto Sans SC", ...defaultTheme.fontFamily.sans],
       },
       typography: {
         zinc: { css: { "--tw-prose-invert-headings": "#ccc" } },
