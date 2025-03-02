@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -8,30 +7,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { sendMessage } from "@/lib/utils";
 import useTheme from "@/hooks/useTheme";
 
 export function ModeToggle() {
-  const { colorMode, theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    const isDark =
-      theme === "dark" ||
-      (theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-    sendMessage({
-      setConfig: {
-        theme: isDark ? "dark" : "light",
-        reactionsEnabled: false,
-      },
-    });
-    document.documentElement.style.setProperty(
-      "color-scheme",
-      isDark ? "dark" : "light"
-    );
-    localStorage.setItem("theme", theme);
-    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-  }, [theme]);
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
