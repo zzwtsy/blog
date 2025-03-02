@@ -4,7 +4,7 @@ import { SITE_TITLE } from "../consts";
 
 export type SearchResult = Array<SearchResultItem>;
 
-interface SearchResultItem {
+export interface SearchResultItem {
   id: string;
   url: string;
   meta: {
