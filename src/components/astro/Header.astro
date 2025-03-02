@@ -3,7 +3,7 @@ import HeaderLink from "./HeaderLink.astro";
 import { SITE_TITLE } from "@/consts";
 import { ModeToggle } from "@/components/react/ModeToggle";
 import { SearchPage } from "@/components/react/SearchPage";
-import { RssIcon, HandHelpingIcon } from "lucide-react";
+import { RssIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 ---
 
@@ -18,17 +18,12 @@ import { Button } from "@/components/ui/button";
     </h2>
     <div class="flex gap-4 items-center text-primary justify-end flex-1">
       <SearchPage client:load />
-      <HeaderLink href="/cyber-begging">
-        <Button aria-label="Cyber Begging" variant={"ghost"} size={"icon"}>
-          <HandHelpingIcon />
-        </Button>
-      </HeaderLink>
-      <HeaderLink href="/rss.xml" target={"_blank"}>
-        <Button aria-label="Rss" variant={"ghost"} size={"icon"}>
-          <RssIcon />
-        </Button>
-      </HeaderLink>
-      <ModeToggle client:load />
     </div>
+    <HeaderLink href="/rss.xml" target={"_blank"}>
+      <Button aria-label="Rss" variant={"ghost"} size={"icon"}>
+        <RssIcon />
+      </Button>
+    </HeaderLink>
+    <ModeToggle client:load />
   </nav>
 </header>
